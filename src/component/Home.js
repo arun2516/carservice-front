@@ -1,6 +1,8 @@
 import React from 'react';
 import Navbar from './Navbar/Navbar';
 import '../App.css';
+import Footer from './Footer'
+import {Link} from "react-router-dom";
 import AssuredWorkloadIcon from '@mui/icons-material/AssuredWorkload';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -10,14 +12,77 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
-import { Card, CardContent, Paper } from '@mui/material';
+import { Card, CardContent} from '@mui/material';
 import { VerticalTimeline, VerticalTimelineElement }  from 'react-vertical-timeline-component';
+import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
+import { styled } from '@mui/material/styles';
+import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
+import MuiAccordion from '@mui/material/Accordion';
+import MuiAccordionSummary from '@mui/material/AccordionSummary';
+import MuiAccordionDetails from '@mui/material/AccordionDetails';
+import Typography from '@mui/material/Typography';
 import 'react-vertical-timeline-component/style.min.css';
 import battery from "../images/battery replacement.jpg"
 import partner from "../images/partner.jpg"
 import service from "../images/car service.jpeg"
 
+
+const Accordion = styled((props) => (
+  <MuiAccordion disableGutters elevation={0} square {...props} />
+))(({ theme }) => ({
+  border: `1px solid ${theme.palette.divider}`,
+  '&:not(:last-child)': {
+    borderBottom: 0,
+  },
+  '&:before': {
+    display: 'none',
+  },
+}));
+
+const AccordionSummary = styled((props) => (
+  <MuiAccordionSummary
+    expandIcon={<ArrowForwardIosSharpIcon sx={{ fontSize: '0.9rem' }} />}
+    {...props}
+  />
+))(({ theme }) => ({
+  backgroundColor:
+    theme.palette.mode === 'dark'
+      ? 'rgba(255, 255, 255, .05)'
+      : 'rgba(0, 0, 0, .03)',
+  flexDirection: 'row-reverse',
+  '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
+    transform: 'rotate(90deg)',
+  },
+  '& .MuiAccordionSummary-content': {
+    marginLeft: theme.spacing(1),
+  },
+}));
+
+const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
+  padding: theme.spacing(2),
+  borderTop: '1px solid rgba(0, 0, 0, .125)',
+}));
+
+function Copyright(props) {
+  return (
+    <p style={{color:"white",marginTop:"20px"}} align="center" {...props}>
+      {'Copyright © '}
+      <Link to="/login" style={{textDecoration:"none", color:"red"}}>
+        Buckle-Up
+      </Link>{' '}
+      {new Date().getFullYear()}
+      {'.'}
+    </p>
+  );
+}
+
 function Home() {
+
+  const [expanded, setExpanded] = React.useState('panel1');
+
+  const handleChange = (panel) => (event, newExpanded) => {
+    setExpanded(newExpanded ? panel : false);
+  };
 
   const [open, setOpen] = React.useState(false);
   const theme = useTheme();
@@ -156,6 +221,121 @@ function Home() {
       
       </div>
       <div className='rectangle2'>  </div>
+      <div>
+        <h1 style={{marginLeft:"10%"}}>Buckle-Up Benefits</h1>
+      </div>
+      <div style={{marginLeft:"10%",display:"grid", gridTemplateColumns: "45% 45%", marginTop:"5%" , marginBottom:"5%"}}>
+        <div style={{display:"flex", justifyContent:"space-evenly"}}>
+          <div style={{display:"flex", justifyContent:"center", alignItems:"center"}}>
+          <DirectionsCarIcon style={{fontSize:"50px", color:"red"}}/>
+          </div>
+          <div style={{display:"flex",flexDirection:"column",  justifyContent:"center", alignItems:"center"}}>
+            <h1>Free Doorstep Pickup & Drop</h1>
+            <h3 style={{fontWeight:"lighter"}}>No More unnecessary Workshops Visit!</h3>
+          </div>
+        </div>
+        <div style={{display:"flex", justifyContent:"space-evenly", marginLeft:"10%"}}>
+          <div style={{display:"flex", justifyContent:"center", alignItems:"center"}}>
+          <DirectionsCarIcon style={{fontSize:"50px", color:"red"}}/>
+          </div>
+          <div style={{display:"flex",flexDirection:"column",  justifyContent:"center", alignItems:"center"}}>
+            <h1>Upfront & Competitive Pricing</h1>
+            <h3 style={{fontWeight:"lighter"}}>Save Upto 40% on your Car Service</h3>
+          </div>
+        </div>
+        <div style={{display:"flex", justifyContent:"space-evenly"}}>
+          <div style={{display:"flex", justifyContent:"center", alignItems:"center"}}>
+          <DirectionsCarIcon style={{fontSize:"50px", color:"red"}}/>
+          </div>
+          <div style={{display:"flex",flexDirection:"column",  justifyContent:"center", alignItems:"center",marginTop:"5%"}}>
+            <h1>Network Warranty On Service</h1>
+            <h3 style={{fontWeight:"lighter"}}>1/1000Kms unconditional warranty on car service</h3>
+          </div>
+        </div>
+        <div style={{display:"flex", justifyContent:"space-evenly", marginLeft:"6%"}}>
+          <div style={{display:"flex", justifyContent:"center", alignItems:"center"}}>
+          <DirectionsCarIcon style={{fontSize:"50px", color:"red"}}/>
+          </div>
+          <div style={{display:"flex",flexDirection:"column", justifyContent:"center", alignItems:"center",marginTop:"5%"}}>
+            <h1>100% Genuine Spare Parts  </h1>
+            <h3 style={{fontWeight:"lighter"}}>Only OEM/OES spare parts used. Quality Assured!</h3>
+          </div>
+        </div>
+      </div>
+      <div className='rectangle2'>  </div>
+      <div style={{marginLeft:"10%"}}>
+        <h1>Common Car Service Questions in Madurai </h1>
+      </div>
+      <div style={{marginLeft:"10%", marginRight:"10%", marginTop:"2%"}}>
+      <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
+        <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
+          <Typography style={{fontWeight:"bold"}}>What if i have any issues with my car service with Buckle-Up</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Typography>
+         Worry not! At Buckle-UP, we provide a network warranty of 1month or 1000kms on every type of car service you book or purchase
+          </Typography>
+        </AccordionDetails>
+      </Accordion>
+      <Accordion expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
+        <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
+          <Typography style={{fontWeight:"bold"}}>Where Can I Book My Car Service With Buckle-Up In Madurai</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Typography>
+            Book directly from our website. Want a more Experience? Call or WhatsApp on 900000000
+          </Typography>
+        </AccordionDetails>
+      </Accordion>
+      <Accordion expanded={expanded === 'panel3'} onChange={handleChange('panel3')}>
+        <AccordionSummary aria-controls="panel3d-content" id="panel3d-header">
+          <Typography style={{fontWeight:"bold"}}>Can I choose a workshop in Madurai of my choice for my car service</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Typography>
+         Every car is assigned a workshop based on various factors like serviceability,spare parts availability,location and then some. Rest assured, Your car will get the best service in Mdurai
+          </Typography>
+        </AccordionDetails>
+      </Accordion>
+      
+    </div>
+    <div className='rectangle2'>  </div>
+    <div>
+    <Footer style={{position:'relative'}} >
+            <Footer.Wrapper>
+                <Footer.Row>
+                <Footer.Column>
+                    <Footer.Title>About Us</Footer.Title>
+                    <Footer.Link href="#">Story</Footer.Link>
+                    <Footer.Link href="#">Clients</Footer.Link>
+                    <Footer.Link href="#">Testimonials</Footer.Link>
+                </Footer.Column>
+                <Footer.Column>
+                    <Footer.Title>Services</Footer.Title>
+                    <Footer.Link href="/">Battery Replacement</Footer.Link>
+                    <Footer.Link href="#">Tyre Replacement</Footer.Link>
+                    <Footer.Link href="#">General Service</Footer.Link>
+                    <Footer.Link href="#">Car Detailing</Footer.Link>
+                </Footer.Column>
+                <Footer.Column>
+                    <Footer.Title>Contact Us</Footer.Title>
+                    <Footer.Link href="#">Madurai</Footer.Link>
+                    <Footer.Link href="#">Trichy</Footer.Link>
+                    <Footer.Link href="#">Dindigul</Footer.Link>
+                    <Footer.Link href="#">Karur</Footer.Link>
+                </Footer.Column>
+                <Footer.Column>
+                    <Footer.Title>Social</Footer.Title>
+                    <Footer.Link href="#"><i className="fab fa-facebook" style={{marginRight:"5px"}}/>Facebook</Footer.Link>
+                    <Footer.Link href="#"><i className="fab fa-instagram" style={{marginRight:"5px"}}/>Instagram</Footer.Link>
+                    <Footer.Link href="#"><i className="fab fa-youtube" style={{marginRight:"5px"}}/>Youtube</Footer.Link>
+                    <Footer.Link href="#"><i className="fab fa-twitter" style={{marginRight:"5px"}}/>Twitter</Footer.Link>
+                </Footer.Column>
+                </Footer.Row>
+            </Footer.Wrapper>
+            <Copyright sx={{ mt: 5 }} />
+        </Footer>
+    </div>
       </div>
   )
 }

@@ -1,11 +1,8 @@
 import './Button.css';
-import React, { useEffect, useState } from 'react';
+import React, {  useState } from 'react';
 import { Link } from 'react-router-dom';
 import "./Navbar.css"
-import { Box} from "@mui/system";
-import {Button}from "@mui/material"
-import TextField from '@mui/material/TextField';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+
 
 
 
@@ -14,7 +11,7 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 function Navbar() {
 
  
-  
+  const key = true;
   
   const [click, setClick] = useState(false);
   
@@ -75,21 +72,11 @@ function Navbar() {
          
           <li className='nav-item'>
             <Link
-              to='/'
+              to='/partner'
               className='nav-links'
               onClick={closeMobileMenu}
             >
               Become a partner
-            </Link>
-          </li>
-
-          <li className='nav-item'>
-            <Link
-              to='/'
-              className='nav-links'
-              onClick={closeMobileMenu}
-            >
-              About
             </Link>
           </li>
           <li>
@@ -101,55 +88,13 @@ function Navbar() {
           </li>
         </ul>
         <Link to='/'>
-      <button className='btn' onClick={handlelogin} >Log In</button>
+          {key? <button className='btn' onClick={handlelogin} >Log Out</button>:<button className='btn' onClick={handlelogin} >Log In</button>}
+      
       
        </Link>
      
    
       </nav>
-
-      <div className={loginclick? 'login-box1':'login-box'}>
-          <div >
-              <Button onClick={handlelogin1} ><ArrowForwardIcon style={{fontSize:"50px"}}/></Button>
-          </div>
-          <div style={{marginTop:"20%"}}>
-              <h1 style={{textAlign:"center"}}>Buckle-Up</h1>
-      <Box component="form"  >
-        <TextField 
-                margin="normal"
-                required
-              
-                id="email"
-                label="Email"
-                name="email"
-                autoComplete="email"
-                autoFocus
-                sx={{ml:18}}
-                style={{width:"50%"}}
-              />
-        <TextField
-                margin="normal"
-                required
-                sx={{ml:18}}
-                style={{width:"50%"}}
-                id="mobileno"
-                label="Mobile-No"
-                name="mobileno"
-                autoComplete="mobileno"
-                autoFocus
-              />
-               <Button
-                type="submit"
-                style={{width:"50%"}}
-                variant="contained"
-                sx={{ mt: 3, mb: 2,ml:18 }}
-               
-              >
-                Continue
-              </Button>
-        </Box>
-        </div>
-      </div>
      
      
       

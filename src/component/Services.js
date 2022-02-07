@@ -1,7 +1,7 @@
 import "./Navbar/Button.css"
 import React, {  useState } from 'react';
 import Footer from './Footer'
-import { Link } from 'react-router-dom';
+import { Link , useNavigate} from 'react-router-dom';
 import "./Navbar/Navbar.css"
 import { Box} from "@mui/system";
 import {Button, Card, CardContent}from "@mui/material";
@@ -12,6 +12,8 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
+import axios from "axios";
+import Notification from "./Notification";
 
 
 function Copyright(props) {
@@ -29,7 +31,11 @@ function Copyright(props) {
 }
 
 
-function Services() {
+function Services(props) {
+  const{name}=props
+  const[notify,setnotify] = useState({isOpen:false,message:'',type:''})
+
+  const history = useNavigate();
   const [open, setOpen] = React.useState(false);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
@@ -41,7 +47,7 @@ function Services() {
   const handleClose = () => {
     setOpen(false);
   };
-  const key = 3;
+  const key = localStorage.getItem("token");
   
   const [click, setClick] = useState(false);
   
@@ -51,15 +57,79 @@ function Services() {
 
   const closeMobileMenu=()=>setClick(false);
 
+  const closeMobileMenu1=()=>{
+    setClick(false);
+    localStorage.removeItem('token');
+    localStorage.removeItem('email')
+    window.location.reload()
+  }
+  
+  
+  const closeMobileMenu2=()=>{
+    setClick(false);
+    history('/login')
+  }
 
 
   const handlelogin=()=>{
-    setloginclick(false)
+    history('/login')
   }
 
   const handlelogin1=()=>{
-    setloginclick(true)
+    localStorage.removeItem('token');
+    localStorage.removeItem('email')
+    window.location.reload()
   }
+
+  const handlesubmit1=async(e)=>{
+    e.preventDefault();
+    const data = new FormData(e.currentTarget);
+    try{
+      var response = await axios.post("http://localhost:3001/general/enquiry",{
+        carregno:data.get("carregno"),
+        carregyr:data.get("carregyr"),
+        odo:data.get("odo"),
+        name:data.get("name"),
+        email:data.get("email"),
+        address:data.get("address"),
+        landmark:data.get("landmark")
+
+      })
+
+      if(response.data){
+        setnotify({isOpen:true,message:"Your Enquiry Is Submitted Successfully..Our Team will Contact You.. Thankyou",type:"success"})
+      }
+
+    }catch(err){
+      setnotify({isOpen:true,message:"Error in Creating Enquiry.. PLease Check All The Field",type:"error"})
+    }
+  }
+
+  const handlesubmit2 =async(e)=>{
+    e.preventDefault();
+    const data = new FormData(e.currentTarget);
+
+    try{
+      var response = await axios.post("http://localhost:3001/general/service",{
+        carregno:data.get("carregno"),
+        carregyr:data.get("carregyr"),
+        odo:data.get("odo"),
+        name:data.get("name"),
+        email:data.get("email"),
+        address:data.get("address"),
+        landmark:data.get("landmark")
+
+      })
+
+      if(response.data){
+        setnotify({isOpen:true,message:"Your service Enquiry Is Submitted Successfully..Our Team will sontact You.. Thankyou",type:"success"})
+      }
+
+    }catch(err){
+      setnotify({isOpen:true,message:"Error in Creating service Enquiry.. PLease Check All The Field",type:"error"})
+    }
+  }
+
 
   return (
   <div>
@@ -97,21 +167,39 @@ function Services() {
               Become a partner
             </Link>
           </li>
+          {key?
+          <li className='nav-item'>
+          <Link
+            to='/'
+            className='nav-links-mobile'
+            onClick={closeMobileMenu}
+          >
+            profile
+          </Link>
+        </li>:<></>
+         }
           <li>
+            {key?
             <Link
+              to='/'
+              className='nav-links-mobile'
+              onClick={closeMobileMenu1}>Log Out</Link>: 
+              <Link
               to='/login'
               className='nav-links-mobile'
-              onClick={closeMobileMenu}>Log In</Link>
+              onClick={closeMobileMenu2}>Log In</Link>}
            
           </li>
         </ul>
-        <Link to='/'>
-          {key? <button className='btn' onClick={handlelogin} >Log Out</button>:<button className='btn' onClick={handlelogin} >Log In</button>}
-      
-      
-       </Link>
-     
-   
+        {key?
+          <div className='dropdown'>
+          <button className='btn'  >{name}</button>
+          <div className='dropdown-content' >
+            <Link to="/profile" className='nav-links'>Profile</Link>
+            <Link to="/" className='nav-links' onClick={handlelogin1}>Log-Out</Link>
+          </div>
+          </div>
+          :<button className='btn' onClick={handlelogin} >Log In</button>}
       </nav>
       </div>
       <div className='rectangle2'>  </div>
@@ -147,10 +235,10 @@ function Services() {
             <Dialog fullScreen={fullScreen} open={open} onClose={handleClose} aria-labelledby="responsive-dialog-title">
             <DialogTitle id="responsive-dialog-title" style={{textAlign:"center", color:"red", fontSize:"25px"}}>{"Book Service"}</DialogTitle>
             <DialogContent style={{borderRadius:"4%"}}>
-            <Box component="form">
-              <TextField margin="normal" required id="regyear" label="Car Register Year" name="regyear" autoComplete="regyear" autoFocus sx={{ml:18}} style={{width:"50%"}}/>
+            <Box component="form" onSubmit={handlesubmit1}>
+              <TextField margin="normal" required id="carregyr" label="Car Register Year" name="carregyr" autoComplete="carregyr" autoFocus sx={{ml:18}} style={{width:"50%"}}/>
               <TextField margin="normal" required sx={{ml:18}} style={{width:"50%"}} id="odo" label="Approx. ODO Reading" name="odo" autoComplete="odo" autoFocus/>
-              <TextField margin="normal" required id="carreg" label="Car Registration Number" name="carreg" autoComplete="carreg" autoFocus sx={{ml:18}} style={{width:"50%"}}/>
+              <TextField margin="normal" required id="carregno" label="Car Registration Number" name="carregno" autoComplete="carregno" autoFocus sx={{ml:18}} style={{width:"50%"}}/>
               <TextField margin="normal" required sx={{ml:18}} style={{width:"50%"}} id="name" label="Name" name="name" autoComplete="name" autoFocus/>
               <TextField margin="normal" required id="email" label="Email" name="email" autoComplete="email" autoFocus sx={{ml:18}} style={{width:"50%"}}/>
               <TextField margin="normal" required sx={{ml:18}} style={{width:"50%"}} id="address" label="Address" name="address" autoComplete="mobileno" autoFocus/>
@@ -189,10 +277,10 @@ function Services() {
             <Dialog fullScreen={fullScreen} open={open} onClose={handleClose} aria-labelledby="responsive-dialog-title">
             <DialogTitle id="responsive-dialog-title" style={{textAlign:"center", color:"red", fontSize:"25px"}}>{"Book Service"}</DialogTitle>
             <DialogContent style={{borderRadius:"4%"}}>
-            <Box component="form">
-              <TextField margin="normal" required id="regyear" label="Car Register Year" name="regyear" autoComplete="regyear" autoFocus sx={{ml:18}} style={{width:"50%"}}/>
+            <Box component="form" onSubmit={handlesubmit2}>
+              <TextField margin="normal" required id="carregyr" label="Car Register Year" name="carregyr" autoComplete="carregyr" autoFocus sx={{ml:18}} style={{width:"50%"}}/>
               <TextField margin="normal" required sx={{ml:18}} style={{width:"50%"}} id="odo" label="Approx. ODO Reading" name="odo" autoComplete="odo" autoFocus/>
-              <TextField margin="normal" required id="carreg" label="Car Registration Number" name="carreg" autoComplete="carreg" autoFocus sx={{ml:18}} style={{width:"50%"}}/>
+              <TextField margin="normal" required id="carregno" label="Car Registration Number" name="carregno" autoComplete="carregno" autoFocus sx={{ml:18}} style={{width:"50%"}}/>
               <TextField margin="normal" required sx={{ml:18}} style={{width:"50%"}} id="name" label="Name" name="name" autoComplete="name" autoFocus/>
               <TextField margin="normal" required id="email" label="Email" name="email" autoComplete="email" autoFocus sx={{ml:18}} style={{width:"50%"}}/>
               <TextField margin="normal" required sx={{ml:18}} style={{width:"50%"}} id="address" label="Address" name="address" autoComplete="mobileno" autoFocus/>
@@ -240,7 +328,7 @@ function Services() {
             <Copyright sx={{ mt: 5 }} />
         </Footer>
     </div>
-
+    <Notification notify={notify} setnotify={setnotify}/>
   </div>
   );
 }

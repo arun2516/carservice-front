@@ -1,10 +1,18 @@
 import React, {useState}from 'react';
-import { Link } from 'react-router-dom';
+import { Link,useNavigate } from 'react-router-dom';
 import {Box,Typography,TextField,Button} from "@mui/material"
+import axios from 'axios';
+import Notification from './Notification';
 
-function Partner() {
-    const key = 3;
-  
+function Partner(props) {
+  const{name} = props
+
+  const[notify,setnotify] = useState({isOpen:false,message:'',type:''})
+
+  const history = useNavigate();
+ 
+  const key = localStorage.getItem('token');
+
   const [click, setClick] = useState(false);
   
   const[loginclick,setloginclick] = useState(false);
@@ -13,15 +21,48 @@ function Partner() {
 
   const closeMobileMenu=()=>setClick(false);
 
+  const closeMobileMenu1=()=>{
+    setClick(false);
+    localStorage.removeItem('token');
+    localStorage.removeItem('email')
+    window.location.reload()
+  }
+  
+  
+  const closeMobileMenu2=()=>{
+    setClick(false);
+    history('/login')
+  }
 
 
   const handlelogin=()=>{
-    setloginclick(false)
+    history('/login')
   }
 
   const handlelogin1=()=>{
-    setloginclick(true)
+    localStorage.removeItem('token');
+    localStorage.removeItem('email')
+    window.location.reload()
   }
+
+  const handlesubmit=async(e)=>{
+    e.preventDefault();
+    const data = new FormData(e.currentTarget);
+    try{
+      var response = await axios.post("http://localhost:3001/onboard/enquiry",{
+        name:data.get("name"),
+        mobileno:data.get("mobileno"),
+        address:data.get("address")
+      })
+
+      if(response){
+        setnotify({isOpen:true,message:"Your Enquiry Is Submitted Successfully..Our Team will Contact You.. Thankyou",type:"success"})
+      }
+    }catch(err){
+      setnotify({isOpen:true,message:"Error in Creating Enquiry.. PLease Check All The Field",type:"error"})
+    }
+  }
+
   return(
   <div>
       <div className='home-image4'>
@@ -58,27 +99,46 @@ function Partner() {
               Become a partner
             </Link>
           </li>
+          {key?
+          <li className='nav-item'>
+          <Link
+            to='/'
+            className='nav-links-mobile'
+            onClick={closeMobileMenu}
+          >
+            profile
+          </Link>
+        </li>:<></>
+         }
           <li>
+            {key?
             <Link
+              to='/'
+              className='nav-links-mobile'
+              onClick={closeMobileMenu1}>Log Out</Link>: 
+              <Link
               to='/login'
               className='nav-links-mobile'
-              onClick={closeMobileMenu}>Log In</Link>
+              onClick={closeMobileMenu2}>Log In</Link>}
            
           </li>
         </ul>
-        <Link to='/'>
-          {key? <button className='btn' onClick={handlelogin} >Log Out</button>:<button className='btn' onClick={handlelogin} >Log In</button>}
-      
-      
-       </Link>
-     
-   
+        {key?
+          <div className='dropdown'>
+          <button className='btn'>{name}</button>
+          <div className='dropdown-content' >
+            <Link to="/profile" className='nav-links'>Profile</Link>
+            <Link to="/" className='nav-links' onClick={handlelogin1}>Log-Out</Link>
+          </div>
+          </div>
+          :<button className='btn' onClick={handlelogin} >Log In</button>}
+    
       </nav>
       </div>
       <div className='rectangle2'>  </div>
       <h1 style={{marginLeft:"10%"}}> Become a Partner</h1>
       <div style={{marginLeft:"30%", marginBottom:"10%"}}>
-      <Box component="form" className="batteryform" style={{backgroundColor:"whitesmoke", width:"50%", borderRadius:"2%",marginTop:"5%", padding:"5%"}}>
+      <Box component="form" onSubmit={handlesubmit} className="batteryform" style={{backgroundColor:"whitesmoke", width:"50%", borderRadius:"2%",marginTop:"5%", padding:"5%"}}>
         <Typography style={{textAlign:"center"}}><h2>Get Onboard</h2></Typography>
         <TextField 
                 margin="normal"
@@ -126,6 +186,7 @@ function Partner() {
         </Box>
       </div>
       <div className='rectangle2'>  </div>
+      <Notification notify={notify} setnotify={setnotify}/>
   </div>
   )
 }

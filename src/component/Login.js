@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import {Link} from "react-router-dom"; 
 import Button from '@mui/material/Button';
@@ -8,8 +9,10 @@ import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
+import Notification from "./Notification"
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import gold from '../images/l2.jpg'
+import axios from 'axios';
 const color = "white";
 
 function Copyright(props) {
@@ -27,12 +30,33 @@ function Copyright(props) {
 
 const theme = createTheme();
 
+
 export default function Login() {
+
+  const[notify,setnotify] = useState({isOpen:false,message:'',type:''})
+
   const history = useNavigate();
 
   
   const handleSubmit = async(event) => {
     event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    try{
+      var response = await axios.post('http://localhost:3001/client/signin',{
+        email:data.get("email"),
+        mobileno:data.get('mobileno'),
+        name:data.get('name')
+      })
+      if(response.data){
+        await localStorage.setItem('email', response.data[0]);
+        await localStorage.setItem('token', response.data[1]);
+       
+        history("/")
+      }
+      
+    }catch(err){
+      setnotify({isOpen:true,message:"Error in signin PLease Check All The Field",type:"error"})
+    }
 };
 
   return (
@@ -90,6 +114,15 @@ export default function Login() {
                 id="mobileno"
                 autoComplete="mobileno"
               />
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="name"
+                label="Name"
+                id="name"
+                autoComplete="name"
+              />
               
               <Button
                 type="submit"
@@ -101,11 +134,17 @@ export default function Login() {
               >
                 Sign In
               </Button>
+              <div style={{display:"flex", justifyContent:"center", marginBottom:"12px"}}>
+              <Link to="/admin" style={{textDecoration:"none", color:"darkgreen"}} >
+              For Admin Sign In Click Here
+                  </Link>
+                  </div>
               <Copyright sx={{ mt: 5 }} />
             </Box>
           </Box>
         </Grid>
       </Grid>
+      <Notification notify={notify} setnotify={setnotify}/>
     </ThemeProvider>
   );
 }

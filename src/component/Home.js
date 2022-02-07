@@ -1,8 +1,10 @@
 import React from 'react';
 import Navbar from './Navbar/Navbar';
+import StripeCheckout from "react-stripe-checkout"
+import {useState} from "react"
 import '../App.css';
 import Footer from './Footer'
-import {Link} from "react-router-dom";
+import {Link,useNavigate} from "react-router-dom";
 import AssuredWorkloadIcon from '@mui/icons-material/AssuredWorkload';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -76,7 +78,14 @@ function Copyright(props) {
   );
 }
 
-function Home() {
+function Home(props) {
+  const[product,setproduct]=useState({
+    name:"Buckle-UP Membership",
+    price:10,
+    productby:"Buckle-Up"
+});
+ const{name,setname}=props;
+ const history = useNavigate();
 
   const [expanded, setExpanded] = React.useState('panel1');
 
@@ -95,10 +104,39 @@ function Home() {
   const handleClose = () => {
     setOpen(false);
   };
+
+  const nav1=()=>{
+    history("/battery")
+  }
+
+  const nav2=()=>{
+    history("/service")
+  }
   
+  const nav3=()=>{
+    history("/partner")
+  }
+const makePayment = token=>{
+  const body={
+    token,
+    product
+  }
+  const headers = {
+    "Content-Type":"application/json"
+  }
+  return fetch(`http://localhost:3001/payment`,{
+    method:"POST",
+    headers,
+    body:JSON.stringify(body)
+  }).then(response=>{
+    console.log(response)
+    const{status}=response;
+    console.log(status)
+  } ).catch(error=>console.log(error))
+}
   return(
       <div>
-          <Navbar/>
+          <Navbar name={name} setname={setname}/>
           <div className='rectangle'>  </div>
           <div className='assurance' style={{display:"flex" , backgroundColor:"#5195e1", width:"80%", marginLeft:"10%",marginTop:"2%",  borderRadius:"10px"}}>
             <div className='logo' style={{display:"flex", justifyContent:"center", alignItems:"center", width:"20%"}}>
@@ -161,7 +199,7 @@ function Home() {
       </div>
       <div className='features-card' style={{display:"flex", marginLeft:"10%",marginRight:"10%",marginTop:"3%", justifyContent:"space-between", overflow:"hidden"}}>
         <div >
-        <Button className="container1">
+        <Button className="container1" onClick={nav1}>
           <Card className="container">
             <img className='poster' src={battery} alt="battery"/>
             <CardContent style={{display:"flex", justifyContent:"center"}}>
@@ -171,7 +209,7 @@ function Home() {
         </Button>
         </div>
         <div>
-        <Button className="container1">
+        <Button className="container1" onClick={nav2}>
           <Card className="container">
           <img className='poster' src={service} alt="service"/>
           <CardContent style={{display:"flex", justifyContent:"center"}}>
@@ -181,7 +219,7 @@ function Home() {
         </Button>
         </div>
         <div>
-        <Button className="container1">
+        <Button className="container1" onClick={nav3}>
           <Card className="container">
           <img className='poster' src={partner} alt="partner"/>
           <CardContent style={{display:"flex", justifyContent:"center"}}>
@@ -192,6 +230,31 @@ function Home() {
         </div>
       </div>
       <div className='rectangle2'>  </div>
+      <div className='assurance' style={{display:"flex" , backgroundColor:"#5195e1", width:"80%", marginLeft:"10%",marginTop:"2%",  borderRadius:"10px"}}>
+<div className='logo' style={{display:"flex", justifyContent:"center", alignItems:"center", width:"20%"}}>
+  <AssuredWorkloadIcon style={{fontSize:"80px", color:"white"}}/>
+</div>
+<div className='assurance-content' style={{color:"white", width:"50%"}}> 
+  <h1 style={{marginTop:"15px"}}>Buckle-Up Membership </h1>
+  <ul>
+    <li style={{marginTop:"15px"}}>
+      Buckle-Up Membersip at 10$(Annual Package)
+    </li>
+    <li style={{marginTop:"15px"}}>
+      Membership Holder Will get 15% Offer on every service in Buckle-Up (valid for 1 year)
+    </li>
+  </ul>
+  <StripeCheckout 
+    stripeKey={process.env.REACT_APP_KEY} 
+    token={makePayment} 
+    name="Buckle-Up Membership Payment"
+    amount={product.price * 100}>
+      <Button><h4 style={{marginTop:"15px", marginBottom:"15px", color:"red"}}> Become Member in just {product.price}$</h4>
+</Button>
+    </StripeCheckout>
+</div>
+</div>
+<div className='rectangle2'>  </div>
       <div>
         <h1 style={{marginLeft:"10%"}}>How Buckle-Up works?</h1>
       </div>
@@ -299,6 +362,8 @@ function Home() {
       </Accordion>
       
     </div>
+    <div className='rectangle2'>  </div>
+  
     <div className='rectangle2'>  </div>
     <div>
     <Footer style={{position:'relative'}} >

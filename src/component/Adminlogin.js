@@ -1,25 +1,26 @@
 import * as React from 'react';
-import {useState} from 'react';
+import {useState} from "react"
 import { useNavigate } from 'react-router-dom';
+import axios from "axios";
 import {Link} from "react-router-dom"; 
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
-import Notification from "./Notification"
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import gold from '../images/l2.jpg'
-import axios from 'axios';
-const color = "white";
+import gold from '../images/admin2.png'
+const color = "#ffffff";
 
 function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}
-      <Link to ="/login" style={{textDecoration:"none", color:"red"}}>
+      <Link to ="/login" style={{textDecoration:"none", color:"goldenrod"}}>
         Buckle-Up
       </Link>{' '}
       {new Date().getFullYear()}
@@ -30,34 +31,30 @@ function Copyright(props) {
 
 const theme = createTheme();
 
-
-export default function Login() {
-
-  const[notify,setnotify] = useState({isOpen:false,message:'',type:''})
-
+export default function Adminlogin() {
   const history = useNavigate();
+  const[error,seterror]=useState("");
 
   
   const handleSubmit = async(event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
+
     try{
-      var response = await axios.post('http://localhost:3001/client/signin',{
-        email:data.get("email"),
-        mobileno:data.get('mobileno'),
-        name:data.get('name')
+      var response = await axios.post('http://localhost:3001/client/adminsignin',{
+        email:data.get('email'),
+        password: data.get('password')
       })
+      console.log(response.data)
       if(response.data){
-        await localStorage.setItem('email', response.data[0]);
-        await localStorage.setItem('token', response.data[1]);
-       
-        history("/")
+        seterror("");
+         await localStorage.setItem('admintoken',response.data);
+         history('/adminpage');
       }
-      
     }catch(err){
-      setnotify({isOpen:true,message:"Error in signin PLease Check All The Field",type:"error"})
+      seterror("***Username/Password is wrong***");
     }
-};
+  };
 
   return (
     <ThemeProvider theme={theme} >
@@ -87,11 +84,11 @@ export default function Login() {
               alignItems: 'center',
             }}
           >
-              <Typography component="h1" variant="h3" color='red' fontFamily='Mochiy Pop P One'>
+              <Typography component="h1" variant="h3" color='goldenrod' fontFamily='Mochiy Pop P One'>
               Buckle-Up
             </Typography>
-            <Typography component="h1" variant="h6" color='red' fontFamily='Mochiy Pop P One' sx={{ mt: 1 }}>
-              Sign in
+            <Typography component="h1" variant="h6" color='goldenrod' fontFamily='Mochiy Pop P One' sx={{ mt: 1 }}>
+              Admin Sign in
             </Typography>
             <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
               <TextField
@@ -108,35 +105,29 @@ export default function Login() {
                 margin="normal"
                 required
                 fullWidth
-                name="mobileno"
-                label="Mobile Number"
-                type="number"
-                id="mobileno"
-                autoComplete="mobileno"
+                name="password"
+                label="Password"
+                type="password"
+                id="password"
+                autoComplete="current-password"
               />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="name"
-                label="Name"
-                id="name"
-                autoComplete="name"
+              <FormControlLabel
+                control={<Checkbox value="remember" color="primary" />}
+                label="Remember me"
               />
-              
+              <Typography style={{color:"red"}}>{error}</Typography>
               <Button
                 type="submit"
-                style={{backgroundColor:"red"}}
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
                
               >
-                Sign In
+                Admin Sign In
               </Button>
               <div style={{display:"flex", justifyContent:"center", marginBottom:"12px"}}>
-              <Link to="/adminlogin" style={{textDecoration:"none", color:"darkgreen"}} >
-              For Admin Sign In Click Here
+              <Link to="/login" style={{textDecoration:"none", color:"darkgreen"}} >
+              For User Sign In Click Here
                   </Link>
                   </div>
               <Copyright sx={{ mt: 5 }} />
@@ -144,7 +135,6 @@ export default function Login() {
           </Box>
         </Grid>
       </Grid>
-      <Notification notify={notify} setnotify={setnotify}/>
     </ThemeProvider>
   );
 }

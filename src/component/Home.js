@@ -18,6 +18,7 @@ import { Card, CardContent} from '@mui/material';
 import { VerticalTimeline, VerticalTimelineElement }  from 'react-vertical-timeline-component';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import { styled } from '@mui/material/styles';
+import PaidIcon from '@mui/icons-material/Paid';
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 import MuiAccordion from '@mui/material/Accordion';
 import MuiAccordionSummary from '@mui/material/AccordionSummary';
@@ -232,7 +233,7 @@ const makePayment = token=>{
       <div className='rectangle2'>  </div>
       <div className='assurance' style={{display:"flex" , backgroundColor:"#5195e1", width:"80%", marginLeft:"10%",marginTop:"2%",  borderRadius:"10px"}}>
 <div className='logo' style={{display:"flex", justifyContent:"center", alignItems:"center", width:"20%"}}>
-  <AssuredWorkloadIcon style={{fontSize:"80px", color:"white"}}/>
+  <PaidIcon style={{fontSize:"80px", color:"white"}}/>
 </div>
 <div className='assurance-content' style={{color:"white", width:"50%"}}> 
   <h1 style={{marginTop:"15px"}}>Buckle-Up Membership </h1>

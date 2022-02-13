@@ -49,7 +49,7 @@ function Partner(props) {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
     try{
-      var response = await axios.post("http://localhost:3001/onboard/enquiry",{
+      var response = await axios.post("https://nodejs--reset-password.herokuapp.com/onboard/enquiry",{
         name:data.get("name"),
         mobileno:data.get("mobileno"),
         address:data.get("address")

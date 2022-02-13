@@ -16,7 +16,7 @@ function Navbar(props) {
 var email = localStorage.getItem("email")
 const {name,setname}=props
   useEffect(async()=>{
-var response = await axios.get("http://localhost:3001/client/data");
+var response = await axios.get("https://nodejs--reset-password.herokuapp.com/client/data");
 response.data.filter(user=>{
   if(user.email == email){
     setname(user.name)

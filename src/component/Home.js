@@ -125,7 +125,7 @@ const makePayment = token=>{
   const headers = {
     "Content-Type":"application/json"
   }
-  return fetch(`http://localhost:3001/payment`,{
+  return fetch(`https://nodejs--reset-password.herokuapp.com/payment`,{
     method:"POST",
     headers,
     body:JSON.stringify(body)

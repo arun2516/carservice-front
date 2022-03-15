@@ -99,7 +99,7 @@ export default function Login() {
                 required
                 fullWidth
                 id="email"
-                label="Email Address:(raja31@gmail.com)"
+                label="Email Address:"
                 name="email"
                 autoComplete="email"
                 autoFocus
@@ -109,7 +109,7 @@ export default function Login() {
                 required
                 fullWidth
                 name="mobileno"
-                label="Mobile Number:(8292728291)"
+                label="Mobile Number:"
                 type="number"
                 id="mobileno"
                 autoComplete="mobileno"
@@ -119,7 +119,7 @@ export default function Login() {
                 required
                 fullWidth
                 name="name"
-                label="Name:(raja sekara pandian)"
+                label="Name:"
                 id="name"
                 autoComplete="name"
               />
@@ -140,6 +140,14 @@ export default function Login() {
                   </Link>
                   </div>
               <Copyright sx={{ mt: 5 }} />
+                    <div>
+        <h1 style={{textAlign: 'center',marginTop:"3%"}}>
+          User Credential
+        </h1>
+        <h5 style={{textAlign: 'center'}}>Email: raja31@gmail.com</h5>
+        <h5 style={{textAlign: 'center', marginRight:"4%"}}>Mobile: 8292728291</h5>
+         <h5 style={{textAlign: 'center', marginRight:"4%"}}>Name: raja sekara pandian</h5>
+      </div>
             </Box>
           </Box>
         </Grid>
